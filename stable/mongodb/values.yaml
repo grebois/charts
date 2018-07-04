@@ -112,7 +112,7 @@ tolerations: []
 ## ref: http://kubernetes.io/docs/user-guide/persistent-volumes/
 ##
 persistence:
-  enabled: true
+  enabled: false
   ## A manually managed Persistent Volume and Claim
   ## Requires persistence.enabled: true
   ## If defined, PVC must be created manually before volume will be bound
@@ -183,3 +183,9 @@ configmap:
 #  security:
 #    authorization: enabled
 #    #keyFile: /opt/bitnami/mongodb/conf/keyfile
+
+## Enable MongoDB exporter for prometheus.io
+## ref: https://github.com/dcu/mongodb_exporter
+##
+mongodb_exporter:
+  enable: false

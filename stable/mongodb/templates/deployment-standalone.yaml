@@ -11,6 +11,12 @@ metadata:
 spec:
   template:
     metadata:
+      {{- if .Values.mongodb_exporter.enabled }}
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/path: '/metrics'
+        prometheus.io/port: "9001"
+      {{- end}}
       labels:
         app: {{ template "mongodb.name" . }}
         release: "{{ .Release.Name }}"
@@ -53,6 +59,19 @@ spec:
         ports:
         - name: mongodb
           containerPort: 27017
+        {{- if .Values.mongodb_exporter.enabled }}
+        lifecycle:
+          postStart:
+            exec:
+              command:
+                - "sh"
+                - "-c"
+                - >
+                  apt update && apt-get install --yes wget;
+                  wget https://github.com/dcu/mongodb_exporter/releases/download/v1.0.0/mongodb_exporter-linux-amd64;
+                  chmod +x mongodb_exporter-linux-amd64;
+                  nohup ./mongodb_exporter-linux-amd64 > nohup.out 2> nohup.err < /dev/null &
+        {{- end }}
         {{- if .Values.livenessProbe.enabled }}
         livenessProbe:
           exec:
